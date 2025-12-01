@@ -1,4 +1,4 @@
 cd build
 make
-./aoc
 cd ..
+./build/aoc

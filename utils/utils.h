@@ -8,7 +8,7 @@
 
 using namespace std;
 
-vector<vector<char>> read_data(const string &filename) {
+vector<vector<char>> read_char_lines(const string &filename) {
     vector<vector<char>> matrix;
     ifstream inputFile(filename);
     if (!inputFile) {
@@ -21,4 +21,18 @@ vector<vector<char>> read_data(const string &filename) {
     }
     inputFile.close();
     return matrix;
+}
+
+vector<string> read_string_lines(const string &filename) {
+    vector<string> lines;
+    ifstream inputFile(filename);
+    if (!inputFile) {
+        cerr << "Error: Could not open file " << filename << endl;
+    }
+    string line;
+    while (getline(inputFile, line)) {
+        lines.push_back(line);
+    }
+    inputFile.close();
+    return lines;
 }

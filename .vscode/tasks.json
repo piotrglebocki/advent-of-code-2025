@@ -1,0 +1,39 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "CMake: configure (Debug)",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "-S", "/Users/glebockp/repositories/advent-of-code-2025",
+                "-B", "/Users/glebockp/repositories/advent-of-code-2025/build",
+                "-DCMAKE_BUILD_TYPE=Debug"
+            ],
+            "options": {
+                "cwd": "/Users/glebockp/repositories/advent-of-code-2025"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "CMake: build AoC",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build", "/Users/glebockp/repositories/advent-of-code-2025/build",
+                "-j"
+            ],
+            "options": {
+                "cwd": "/Users/glebockp/repositories/advent-of-code-2025/"
+            },
+            "dependsOn": [
+                "CMake: configure (Debug)"
+            ],
+            "problemMatcher": "$gcc",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
