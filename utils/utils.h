@@ -36,3 +36,19 @@ vector<string> read_string_lines(const string &filename) {
     inputFile.close();
     return lines;
 }
+
+vector<string> split(const string& word, char separator) {
+    vector<string> result;
+    string current;
+
+    for (char c : word) {
+        if (c == separator) {
+            result.push_back(current);
+            current.clear();
+        } else {
+            current += c;
+        }
+    }
+    result.push_back(current);
+    return result;
+}
