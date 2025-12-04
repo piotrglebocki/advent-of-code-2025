@@ -8,6 +8,16 @@
 
 using namespace std;
 
+template<typename T> 
+void print_grid(const vector<vector<T>>& grid) {
+    for (const auto& row : grid) {
+        for (auto it : row) {
+            cout << it;
+        }
+        cout << endl;
+    }
+}
+
 vector<vector<char>> read_char_lines(const string &filename) {
     vector<vector<char>> matrix;
     ifstream inputFile(filename);
