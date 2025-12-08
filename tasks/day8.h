@@ -55,6 +55,14 @@ public:
         return find(x) == find(y);
     }
 
+    bool are_all_connected() {
+        int x = root[0];
+        for (size_t i = 1; i < root.size(); ++i) {
+            if (x != root[i]) return false;
+        }
+        return true;
+    }
+
     vector<int> get_connected_groups_count() {
         unordered_map<int, int> counts;
         for (size_t i = 0; i < root.size(); ++i) {
@@ -114,4 +122,46 @@ void solve1() {
         res *= groups[groups.size() - i - 1];
     }
     cout << res << endl;
+}
+
+// ========== PART 2 ============================
+
+void solve2() {
+    const auto lines = read_string_lines("data.txt");
+    vector<Point> points;
+    points.reserve(lines.size());
+
+    for (const auto& line : lines) {
+        auto tab = split(line, ',');
+        points.push_back({stoi(tab[0]), stoi(tab[1]), stoi(tab[2])});
+    }
+
+    vector<Connection> connections;
+    for (int i = 0; i < points.size() - 1; ++i) {
+        for (int j = i + 1; j < points.size(); ++j) {
+            float dist = points[i].dist(points[j]);
+            connections.push_back(Connection{dist, i, j});
+        }
+    }
+
+    sort(connections.begin(), connections.end(), [](const Connection& a, const Connection& b) {
+        return a.distance < b.distance;
+    });
+
+    UnionFind uf(points.size());
+
+    for (int i = 0; i < connections.size(); ++i) {
+        const auto& conn = connections[i];
+        const auto i1 = conn.point_index_1;
+        const auto i2 = conn.point_index_2;
+
+        if (!uf.connected(i1, i2)) {
+            uf.unionSet(i1, i2);
+            if (uf.are_all_connected()) {
+                cout << points[i1].to_str() << ":" << points[i2].to_str() << endl;
+                cout << (long long) points[i1].x * points[i2].x << endl;
+                return;
+            }
+        }
+    }
 }
