@@ -1,9 +1,9 @@
 #include <iostream>
-#include "day9.h"
+#include "day10.h"
 
 using namespace std;
 
 int main() {
-    solve2();
+    solve1();
     return 0;
 }
