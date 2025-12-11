@@ -13,6 +13,7 @@ using namespace std;
 struct InputLineData {
     string indicator;
     vector<vector<int>> buttons;
+    vector<int> joltages;
 
     void print() {
         cout << "["<< indicator << "]";
@@ -24,7 +25,12 @@ struct InputLineData {
             }
             cout << ")";
         }
-        cout << endl;
+        cout << " {";
+        for (size_t i = 0; i < joltages.size(); ++i) {
+            cout << joltages[i];
+            if (i < joltages.size() - 1) cout << ",";
+        }
+        cout << "}" << endl;
     }
 };
 
@@ -33,12 +39,21 @@ InputLineData parse_line(const string& line) {
     string indicator = "";
     string current = "";
     vector<vector<int>> buttons;
+    vector<int> joltages;
 
     for (auto c : line) {
-        if (c == '[' || c == '(') {
+        if (c == '[' || c == '(' || c == '{') {
             current.clear();
         } else if (c == ']') {
             indicator = current;
+            current.clear();
+        } else if (c == '}') {
+            auto s_numbers = split(current, ',');
+            vector<int> i_numbers;
+            joltages.reserve(s_numbers.size());
+            for (const auto& it : s_numbers) {
+                joltages.push_back(stoi(it));
+            }
             current.clear();
         } else if (c == ')') {
             auto s_numbers = split(current, ',');
@@ -54,7 +69,7 @@ InputLineData parse_line(const string& line) {
         }
     }
 
-    return {indicator, buttons};
+    return {indicator, buttons, joltages};
 }
 
 string toggle(const string& indicators, const vector<int>& button) {
@@ -112,5 +127,61 @@ void solve1() {
         sum += count;
     }
 
+    cout << "Sum = " << sum << endl;
+}
+
+// ========== PART 2 ============================
+
+vector<int> toggle_2(const vector<int>& jolteges, const vector<int>& button) {
+    vector<int> res = jolteges;
+    for (auto index : button) {
+        ++res[index];
+    }
+    return res;
+}
+
+int find_fewer_presses_2(const InputLineData& line_data) {
+    vector<int> initial_joltages_state(line_data.joltages.size(), 0);
+
+    if (line_data.joltages == initial_joltages_state) {
+        return 0;
+    }
+
+    queue<vector<int>> q;
+    q.push(initial_joltages_state);
+
+    int presses_count = 1;
+    while (!q.empty()) {
+        size_t size = q.size();
+        while(size--) {
+            const auto current_state = q.front(); 
+            q.pop();
+
+            for (auto button : line_data.buttons) {
+                const auto new_state = toggle_2(current_state, button);
+                if (new_state == line_data.joltages) {
+                    return presses_count;
+                }
+                q.push(new_state);
+            }
+        }
+        ++presses_count;
+    }
+    return presses_count;
+}
+
+void solve2() {
+    auto lines = read_string_lines("data.txt");
+    const auto size = lines.size();
+
+    long long sum = 0;
+    int i = 0;
+    for (size_t i = 0; i < size; ++i) {
+        auto data = parse_line(lines[i]);
+        // data.print();
+        auto count = find_fewer_presses_2(data);
+        cout << "Line ("<<i<<"/"<<size<< ") fewer presses = " << count << endl;
+        sum += count;
+    }
     cout << "Sum = " << sum << endl;
 }
