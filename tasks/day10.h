@@ -140,6 +140,13 @@ vector<int> toggle_2(const vector<int>& jolteges, const vector<int>& button) {
     return res;
 }
 
+bool is_overloaded(const vector<int>& current, const vector<int>& target) {
+    for (size_t i = 0; i < target.size(); ++i) {
+        if (current[i] > target[i] ) return true;
+    }
+    return false;
+}
+
 int find_fewer_presses_2(const InputLineData& line_data) {
     vector<int> initial_joltages_state(line_data.joltages.size(), 0);
 
@@ -162,7 +169,9 @@ int find_fewer_presses_2(const InputLineData& line_data) {
                 if (new_state == line_data.joltages) {
                     return presses_count;
                 }
-                q.push(new_state);
+                if (!is_overloaded(current_state, line_data.joltages)) {
+                    q.push(new_state);
+                }
             }
         }
         ++presses_count;
